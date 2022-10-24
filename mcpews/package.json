@@ -1,0 +1,38 @@
+{
+  "name": "mcpews",
+  "version": "3.0.1",
+  "description": "A library that supports MCPE Websocket Protocol",
+  "main": "lib/index.js",
+  "bin": {
+    "mcpews": "./src/repl.js",
+    "mcpewsmitm": "./src/mitm.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XeroAlpha/mcpews.git"
+  },
+  "keywords": [
+    "minecraft",
+    "bedrock",
+    "websocket"
+  ],
+  "author": "ProjectXero",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/XeroAlpha/mcpews/issues"
+  },
+  "homepage": "https://github.com/XeroAlpha/mcpews",
+  "dependencies": {
+    "uuid": "^8.3.2",
+    "ws": "^8.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}

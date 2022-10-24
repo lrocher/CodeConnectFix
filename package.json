@@ -1,0 +1,27 @@
+{
+  "name": "CodeConnectFix",
+  "version": "1.0.0",
+  "description": "Allow use 'Code Connection for Minecraft' v1.50 with Minecraft Bedrock v1.19.x",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "pkg package.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": "index.js",
+  "pkg": {
+    "targets": [
+      "node16-win-x64"
+    ],
+    "outputPath": "dist"
+  },
+  "author": "Rocher Laurent",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^9.0.0",
+    "ws": "^8.9.0"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.0"
+  }
+}
