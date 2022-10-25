@@ -15,9 +15,9 @@ Requirement : Install Node.Js v16 LTS (https://nodejs.org/en/download/)
 
 1) Download Source and extract archive in a directory (or Git clone project) 
 2) Open a shell (cmd.exe) an navigate to project directory
-3) Executable 'npm install' for download dependencies
-4) Executable 'npm start' or 'node index.js' for run server
-5) Executable 'npm run build' for generate executable
+3) Execute 'npm install' for download dependencies
+4) Execute 'npm start' or 'node index.js' for run server
+5) Execute 'npm run build' for generate executable
 		
 ## Usage
 
@@ -39,7 +39,12 @@ On different computers, you need to adjust computer address.
 
 - [address:port] : Value copied from 'Code Connection for Minecraft' after \connect. (Default: localhost:19131)
 - [port] : Value for 'CodeConnectFix' (Default: 19135)
-	
+
+## Troubleshooting
+
+- If 'Code Connection for Minecraft' interface don't change after execute /connect command. Restart 'CodeConnectFix' and retry 'connect' commande.
+- If 'CodeConnectFix' window close, try to run 'CodeConnectFix' from command line to check what wrong.
+
 ## Credits
 
 This tools use a modified version of 'mcpews' v3.0.1 (A library that supports MCPE Websocket Protocol) made by XeroAlpha.
