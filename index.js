@@ -41,6 +41,11 @@ function main(destAddress, sourcePort) {
             }
         });
 		
+		client.on("commandAgent", ({requestId, commandLine}) => {
+			console.log(`-> [${clientNo}] commandAgent: ${requestId} ${commandLine}`);
+			session.sendCommandAgentRaw(requestId, commandLine);
+        });
+		
         client.on("commandLegacy", ({
             requestId, commandName, overload, input
         }) => {
@@ -88,6 +93,10 @@ function main(destAddress, sourcePort) {
 			}
             client.respondCommand(requestId, body);
         });
+		session.on("commandAgentResponse", ({ requestId, actionName, body }) => {
+            console.log(`<- [${clientNo}] commandAgentResponse: ${requestId} ${actionName}`);
+            client.respondCommandAgent(requestId, actionName, body);
+        });		
         session.on("message", ({ version }) => {
             if (version !== serverVersion) {
                 serverVersion = version;

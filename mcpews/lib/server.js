@@ -39,6 +39,13 @@ function onMessage(messageData) {
                 });
             }
             break;
+		case "action:agent":
+		    this.respondCommandAgent(header.requestId, {
+                ...frameBase,
+                requestId: header.requestId,
+				actionName: header.actionName
+            });
+            break;		
         case "commandResponse":
             this.respondCommand(header.requestId, {
                 ...frameBase,
@@ -182,6 +189,17 @@ class Session extends EventEmitter {
             requestId
         );
     }
+	
+	sendCommandAgentRaw(requestId, command) {
+        this.sendFrame(
+            "action:agent",
+            {
+                version: 1,
+                commandLine: command,
+            },
+            requestId
+        );
+    }
 
     sendCommand(command, callback) {
         const requestId = randomUUID();
@@ -222,6 +240,20 @@ class Session extends EventEmitter {
             }
         } else {
             this.emit("commandResponse", frame);
+        }
+    }
+	
+	respondCommandAgent(requestId, frame) {
+        const callback = this.responsors.get(requestId);
+        this.responsors.delete(requestId);
+        if (callback) {
+            try {
+                callback.call(this, frame);
+            } catch (err) {
+                this.emit("error", err);
+            }
+        } else {
+            this.emit("commandAgentResponse", frame);
         }
     }
 
