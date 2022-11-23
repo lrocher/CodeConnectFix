@@ -39,13 +39,13 @@ function onMessage(messageData) {
                 });
             }
             break;
-		case "action:agent":
-		    this.respondCommandAgent(header.requestId, {
+        case "action:agent":
+            this.respondCommandAgent(header.requestId, {
                 ...frameBase,
                 requestId: header.requestId,
-				actionName: header.actionName
+                actionName: header.actionName
             });
-            break;		
+            break;
         case "commandResponse":
             this.respondCommand(header.requestId, {
                 ...frameBase,
@@ -55,6 +55,7 @@ function onMessage(messageData) {
         case "error":
             this.emit("mcError", {
                 ...frameBase,
+                requestId: header.requestId,
                 statusCode: body.statusCode,
                 statusMessage: body.statusMessage
             });
@@ -65,9 +66,9 @@ function onMessage(messageData) {
     this.emit("message", frameBase);
 }
 
-function buildHeader(purpose, requestId, extraProperties) {
+function buildHeader(purpose, requestId, version, extraProperties) {
     return {
-        version: V1,
+        version,
         requestId: requestId || "00000000-0000-0000-0000-000000000000",
         messagePurpose: purpose,
         messageType: "commandRequest",
@@ -80,6 +81,7 @@ class Session extends EventEmitter {
         super();
         this.server = server;
         this.socket = socket;
+        this.version = V1;
         this.eventListeners = new Map();
         this.responsors = new Map();
         socket.on("message", onMessage.bind(this));
@@ -121,7 +123,7 @@ class Session extends EventEmitter {
 
     sendFrame(messagePurpose, body, requestId, extraHeaders) {
         this.sendMessage({
-            header: buildHeader(messagePurpose, requestId, extraHeaders),
+            header: buildHeader(messagePurpose, requestId, this.version, extraHeaders),
             body
         });
     }
@@ -189,8 +191,15 @@ class Session extends EventEmitter {
             requestId
         );
     }
-	
-	sendCommandAgentRaw(requestId, command) {
+
+    sendCommand(command, callback) {
+        const requestId = randomUUID();
+        this.responsors.set(requestId, callback);
+        this.sendCommandRaw(requestId, Array.isArray(command) ? command.join(" ") : command);
+        return requestId;
+    }
+
+    sendCommandAgentRaw(requestId, command) {
         this.sendFrame(
             "action:agent",
             {
@@ -201,10 +210,10 @@ class Session extends EventEmitter {
         );
     }
 
-    sendCommand(command, callback) {
+    sendCommandAgent(command, callback) {
         const requestId = randomUUID();
         this.responsors.set(requestId, callback);
-        this.sendCommandRaw(requestId, Array.isArray(command) ? command.join(" ") : command);
+        this.sendCommandAgentRaw(requestId, Array.isArray(command) ? command.join(" ") : command);
         return requestId;
     }
 
@@ -242,8 +251,8 @@ class Session extends EventEmitter {
             this.emit("commandResponse", frame);
         }
     }
-	
-	respondCommandAgent(requestId, frame) {
+
+    respondCommandAgent(requestId, frame) {
         const callback = this.responsors.get(requestId);
         this.responsors.delete(requestId);
         if (callback) {
@@ -292,6 +301,7 @@ class WSServer extends WebSocket.Server {
     }
 
     // overwrite handleUpgrade to skip sec-websocket-key format test
+    // minecraft pe pre-1.2 use a shorter version of sec-websocket-key
     handleUpgrade(req, socket, head, cb) {
         const key = req.headers["sec-websocket-key"];
         if (key && /^[+/0-9A-Za-z]{11}=$/.test(key)) {
@@ -309,6 +319,12 @@ class WSServer extends WebSocket.Server {
     broadcastCommand(command, callback) {
         this.sessions.forEach((e) => {
             e.sendCommand(command, callback);
+        });
+    }
+
+    broadcastCommandAgent(command, callback) {
+        this.sessions.forEach((e) => {
+            e.sendCommandAgent(command, callback);
         });
     }
 

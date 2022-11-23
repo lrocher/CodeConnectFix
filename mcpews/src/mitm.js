@@ -27,6 +27,10 @@ function main(destAddress, sourcePort) {
                 console.log(`-> [${clientNo}] command: ${requestId} ${commandLine}`);
             }
         });
+        client.on("commandAgent", ({requestId, commandLine}) => {
+            session.sendCommandAgentRaw(requestId, commandLine);
+            console.log(`-> [${clientNo}] commandAgent: ${requestId} ${commandLine}`);
+        });
         client.on("commandLegacy", ({
             requestId, commandName, overload, input
         }) => {
@@ -51,8 +55,8 @@ function main(destAddress, sourcePort) {
             console.log(`-> [${clientNo}] disconnected from client`);
             session.disconnect(true);
         });
-        session.on("mcError", ({ statusCode, statusMessage }) => {
-            client.sendError(statusCode, statusMessage);
+        session.on("mcError", ({ requestId, statusCode, statusMessage }) => {
+            client.sendError(statusCode, statusMessage, requestId);
             console.log(`<- [${clientNo}] error: ${statusMessage}`);
         });
         session.on("event", ({ purpose, eventName, body }) => {
@@ -62,6 +66,10 @@ function main(destAddress, sourcePort) {
         session.on("commandResponse", ({ requestId, body }) => {
             client.respondCommand(requestId, body);
             console.log(`<- [${clientNo}] commandResponse: ${requestId}`, body);
+        });
+        session.on("commandAgentResponse", ({ requestId, actionName, body }) => {
+            client.respondCommandAgent(requestId, actionName, body);
+            console.log(`<- [${clientNo}] commandAgentResponse: ${requestId} ${actionName}`);
         });
         session.on("message", ({ version }) => {
             if (version !== serverVersion) {

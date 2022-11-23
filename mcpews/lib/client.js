@@ -11,8 +11,8 @@ function respondCommandRequest(body) {
     return this.client.respondCommand(this.requestId, body);
 }
 
-function respondCommandAgentRequest(actionName, body) {
-	return this.client.respondCommandAgent(this.requestId, actionName, body);
+function respondCommandAgentRequest(body) {
+    return this.client.respondCommandAgent(this.requestId, this.actionName, body);
 }
 
 function onMessage(messageData) {
@@ -54,17 +54,17 @@ function onMessage(messageData) {
             }
             break;
         }
-		case "action:agent":
-			if (body.commandLine) {
-				this.emit("commandAgent", {
-					...frameBase,
-					requestId: header.requestId,
-					commandLine: body.commandLine,
-					respond: respondCommandAgentRequest,
-					handleEncryptionHandshake
-				});
+        case "action:agent":
+            if (body.commandLine) {
+                this.emit("commandAgent", {
+                    ...frameBase,
+                    requestId: header.requestId,
+                    commandLine: body.commandLine,
+                    respond: respondCommandAgentRequest,
+                    handleEncryptionHandshake
+                });
             } else {
-				frameBase.purpose = header.messagePurpose = 'commandRequest';
+                frameBase.purpose = header.messagePurpose = 'commandRequest';
                 this.emit("commandLegacy", {
                     ...frameBase,
                     requestId: header.requestId,
@@ -74,7 +74,7 @@ function onMessage(messageData) {
                     respond: respondCommandRequest
                 });
             }
-			break;			
+            break;
         case "commandRequest":
             if (body.commandLine) {
                 this.emit("command", {
@@ -168,8 +168,7 @@ class WSClient extends EventEmitter {
     }
 
     sendEvent(eventName, body) {
-        
-		if (this.version === V2) {
+        if (this.version === V2) {
             this.sendFrame("event", body, null, { eventName });
         } else {
             this.sendFrame("event", {
@@ -189,9 +188,9 @@ class WSClient extends EventEmitter {
     respondCommand(requestId, body) {
         this.sendFrame("commandResponse", body, requestId);
     }
-	
-	respondCommandAgent(requestId, actionName, body) {
-        this.sendFrame("action:agent", body, requestId, { actionName, action : actionIdFromName[actionName] });
+
+    respondCommandAgent(requestId, actionName, body) {
+        this.sendFrame("action:agent", body, requestId, { actionName, action : actionIdFromactionName[actionName] });
     }
 
     disconnect() {
@@ -199,24 +198,24 @@ class WSClient extends EventEmitter {
     }
 }
 
-const actionIdFromName = {
-	'attack' : 1,
-	'collect' : 2,
-	'destroy' : 3,
-	'detectRedstone' : 4,
-	'detectObstacle' : 5,
-	'drop' : 6,
-	'dropAll' : 7,
-	'inspect' : 8,
-	'inspectItemCount' : 10,
-	'inspectItemDetail' : 11,
-	'inspectItemSpace' : 12,
-	'interact' : 13,
-	'move' : 14,
-	'placeBlock' : 15,
-	'till' : 16,
-	'transferItemTo' : 17,
-	'turn' : 18	
+const actionIdFromactionName = {
+    'attack' : 1,
+    'collect' : 2,
+    'destroy' : 3,
+    'detectRedstone' : 4,
+    'detectObstacle' : 5,
+    'drop' : 6,
+    'dropAll' : 7,
+    'inspect' : 8,
+    'inspectItemCount' : 10,
+    'inspectItemDetail' : 11,
+    'inspectItemSpace' : 12,
+    'interact' : 13,
+    'move' : 14,
+    'placeBlock' : 15,
+    'till' : 16,
+    'transferItemTo' : 17,
+    'turn' : 18
 };
 
 module.exports = WSClient;
