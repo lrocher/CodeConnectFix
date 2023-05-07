@@ -5,6 +5,7 @@ const { WSServer, WSClient, Version } = require("./mcpews");
 
 const ip = Object.values(require('os').networkInterfaces()).flat().find(i => i.family == 'IPv4' && !i.internal);
 const localhost = ( ip != null ? ip.address : 'localhost');
+const debug = (process.env.NODE_ENV === 'development');
 
 function main(destAddress, sourcePort) {
     const wss = new WSServer(sourcePort);
@@ -13,8 +14,10 @@ function main(destAddress, sourcePort) {
 	console.log(`Enter '/connect ${localhost}:${sourcePort}' to establish a connection.`);
     console.log(`If connection established, CodeConnectFix will connect to ${destAddress} and forward messages`);
 	
+	wss.debug = debug;
     wss.on("client", ({ session }) => {
         const client = new WSClient(`ws://${destAddress}`, Version.V2);
+		client.debug = debug;
         const clientNo = clientCounter;
         clientCounter += 1;
     

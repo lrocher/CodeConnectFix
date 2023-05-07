@@ -23,7 +23,8 @@ function onMessage(messageData) {
         decryptedMessageData = messageData;
     }
     const message = JSON.parse(decryptedMessageData);
-	//console.log("Client receiveMessage : ", message);
+	if (this.debug)
+		console.log("Client receiveMessage : ", message);
     const { header, body } = message;
     const { messagePurpose: purpose, version } = header;
     const frameBase = {
@@ -120,6 +121,7 @@ class WSClient extends EventEmitter {
         this.socket = new WebSocket(address);
         this.eventListenMap = new Map();
         this.version = version || V1;
+		this.debug = false;
         this.socket.on("message", onMessage.bind(this)).on("close", onClose.bind(this));
     }
 
@@ -145,7 +147,8 @@ class WSClient extends EventEmitter {
     }
 
     sendMessage(message) {
-		//console.log("Client sendMessage : ", message);
+		if (this.debug)
+			console.log("Client sendMessage : ", message);
         let messageData = JSON.stringify(message);
         if (this.encryption) {
             messageData = this.encryption.encrypt(messageData);

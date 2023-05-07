@@ -7,7 +7,7 @@ It's a 'Man In The Middle' WebSocketSerwer for simulate a compatible version of 
 
 ### Windows Executable - Easy Way -
 
-Download [CodeConnectFix.exe](https://github.com/lrocher/CodeConnectFix/releases/download/v1.0.0/CodeConnectFix.exe) and copy file on your Desktop.
+Download [CodeConnectFix.exe](https://github.com/lrocher/CodeConnectFix/releases/download/v1.1.2/CodeConnectFix.exe) and copy file on your Desktop.
 
 ### From Source - Developper Way -
 
@@ -18,7 +18,7 @@ Requirement : Install Node.Js v16 LTS (https://nodejs.org/en/download/)
 3) Execute 'npm install' for download dependencies
 4) Execute 'npm start' or 'node index.js' for run server
 5) Execute 'npm run build' for generate executable
-		
+
 ## Usage
 
 On same computer :
@@ -44,6 +44,15 @@ On different computers, you need to adjust computer address.
 
 - If 'Code Connection for Minecraft' interface don't change after execute /connect command. Restart 'CodeConnectFix' and retry 'connect' commande.
 - If 'CodeConnectFix' window close, try to run 'CodeConnectFix' from command line to check what wrong.
+
+## Debug
+
+For additionnal debug message in console, define a NODE_ENV environment variable to 'development' before start 'CodeConnectFix'.
+
+On windows, Open a cmd.exe shell (use Windows+R)
+> cd [CodeConnectFix Directory]
+> SET NODE_ENV=development
+> CodeConnectFix.exe
 
 ## Credits
 

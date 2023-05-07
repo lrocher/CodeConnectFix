@@ -12,7 +12,8 @@ function onMessage(messageData) {
         decryptedMessageData = messageData;
     }
     const message = JSON.parse(decryptedMessageData);
-	//console.log("Server receiveMessage : ", message);
+	if (this.debug)
+		console.log("Server receiveMessage : ", message);
     const { header, body } = message;
     const { messagePurpose: purpose, version } = header;
     const frameBase = {
@@ -80,6 +81,7 @@ class Session extends EventEmitter {
     constructor(server, socket) {
         super();
         this.server = server;
+		this.debug = this.server.debug;
         this.socket = socket;
         this.version = V1;
         this.eventListeners = new Map();
@@ -113,7 +115,8 @@ class Session extends EventEmitter {
     }
 
     sendMessage(message) {
-		//console.log("Server sendMessage : ", message);
+		if (this.debug)
+			console.log("Server sendMessage : ", message);
         let messageData = JSON.stringify(message);
         if (this.encryption) {
             messageData = this.encryption.encrypt(messageData);
@@ -291,8 +294,9 @@ class WSServer extends WebSocket.Server {
     constructor(port, handleClient) {
         super({
             port,
-            handleProtocols: (protocols) => protocols.find((protocol) => protocol === implementName)
+            handleProtocols: (protocols) => protocols.has(implementName)
         });
+		this.debug = false;
         this.sessions = new Set();
         this.on("connection", onConnection);
         if (handleClient) {
