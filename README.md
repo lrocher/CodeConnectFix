@@ -1,6 +1,6 @@
 # CodeConnectFix
 
-Allow use 'Code Connection for Minecraft' v1.50 with Minecraft Bedrock v1.19.x
+Allow use 'Code Connection for Minecraft' v1.50 with Minecraft Bedrock >= v1.19.x.
 It's a 'Man In The Middle' WebSocketSerwer for simulate a compatible version of Minecraft Bedrock to 'Code Connection for Minecraft'.
 
 ## Install
