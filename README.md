@@ -54,6 +54,12 @@ On windows, Open a cmd.exe shell (use Windows+R)
 > SET NODE_ENV=development
 > CodeConnectFix.exe
 
+## Code Connection Installer
+
+Code Connection Installer is not availlable on minecraft makecode website.
+But, it's possible to retreive it using webarchive : 
+  - http://web.archive.org/web/20231004075455/https://minecraft.makecode.com/setup/minecraft-windows10
+ 
 ## Credits
 
 This tools use a modified version of 'mcpews' v3.0.1 (A library that supports MCPE Websocket Protocol) made by XeroAlpha.
